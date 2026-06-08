@@ -1,0 +1,7 @@
+streamlit
+pandas
+sqlalchemy
+matplotlib
+statsmodels
+plotly
+pymysql      # only needed if you switch to your MySQL database
