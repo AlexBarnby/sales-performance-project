@@ -79,7 +79,7 @@ with tabs[0]:
     series = q.monthly_series(engine, filters)
     fig = px.line(series, x="month", y="revenue", markers=True, color_discrete_sequence=["#2ec4b6"])
     fig.update_traces(line=dict(width=2))
-    st.plotly_chart(style(fig), use_container_width=True)
+    st.plotly_chart(style(fig), use_container_width=True, key="ov_revenue_time")
 
     left, right = st.columns(2)
     with left:
@@ -88,14 +88,14 @@ with tabs[0]:
         fig = px.bar(cat, x="revenue", y="product_name", orientation="h",
                      color="product_name", color_discrete_sequence=PALETTE)
         fig.update_layout(showlegend=False, yaxis_title="", xaxis_title="Revenue (€)")
-        st.plotly_chart(style(fig), use_container_width=True)
+        st.plotly_chart(style(fig), use_container_width=True, key="ov_top_products")
     with right:
         st.subheader("Revenue by continent")
         reg = q.by_region(engine, filters, "continent").sort_values("revenue")
         fig = px.bar(reg, x="revenue", y="region", orientation="h",
                      color="region", color_discrete_sequence=PALETTE)
         fig.update_layout(showlegend=False, yaxis_title="", xaxis_title="Revenue (€)")
-        st.plotly_chart(style(fig), use_container_width=True)
+        st.plotly_chart(style(fig), use_container_width=True, key="ov_revenue_continent")
 
 # Catalogue (P&L).
 with tabs[1]:
@@ -142,7 +142,7 @@ with tabs[2]:
         geo=dict(showframe=False, bgcolor="rgba(0,0,0,0)", landcolor="#2a2a2a", showcountries=True,
                  countrycolor="rgba(255,255,255,0.15)"),
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, key="map_choropleth")
 
     st.subheader("Top countries")
     st.dataframe(
@@ -166,7 +166,7 @@ with tabs[3]:
     fig = px.bar(long, x="value", y="region", color="measure", orientation="h", barmode="group",
                  color_discrete_sequence=["#4895ef", "#06d6a0"])
     fig.update_layout(yaxis_title="", xaxis_title="€", legend_title="")
-    st.plotly_chart(style(fig, height=max(380, 40 * len(reg))), use_container_width=True)
+    st.plotly_chart(style(fig, height=max(380, 40 * len(reg))), use_container_width=True, key="reg_revenue_profit")
 
     st.dataframe(
         reg.sort_values("revenue", ascending=False).rename(columns={
@@ -182,7 +182,7 @@ with tabs[3]:
     fig = px.bar(top, x="revenue", y="product_name", orientation="h",
                  color="product_name", color_discrete_sequence=PALETTE)
     fig.update_layout(showlegend=False, yaxis_title="", xaxis_title="Revenue (€)")
-    st.plotly_chart(style(fig), use_container_width=True)
+    st.plotly_chart(style(fig), use_container_width=True, key="reg_products")
 
 # Year-on-year.
 with tabs[4]:
@@ -196,7 +196,7 @@ with tabs[4]:
                       color="year", markers=True, color_discrete_sequence=PALETTE)
         fig.update_layout(xaxis_title="", yaxis_title="Revenue (€)", legend_title="Year")
         fig.update_xaxes(categoryorder="array", categoryarray=months)
-        st.plotly_chart(style(fig), use_container_width=True)
+        st.plotly_chart(style(fig), use_container_width=True, key="yoy_lines")
 
         st.subheader("Yearly totals and growth")
         yearly = yoy.groupby("year")[["revenue", "net_profit"]].sum().reset_index()
@@ -236,7 +236,7 @@ with tabs[5]:
         fig.add_trace(go.Scatter(x=fc_x, y=forecast.values, mode="lines+markers",
                                  name="Forecast", line=dict(color="#ff9f1c", width=2, dash="dash")))
         fig.update_layout(xaxis_title="Month index", yaxis_title="Revenue (€)")
-        st.plotly_chart(style(fig), use_container_width=True)
+        st.plotly_chart(style(fig), use_container_width=True, key="forecast_chart")
 
         st.caption("Projected three months ahead from the monthly revenue trend and its seasonal pattern.")
         with st.expander("How this forecast works"):
